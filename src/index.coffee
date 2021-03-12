@@ -9,7 +9,7 @@ POSTFIXES = [
   'On'
 ]
 
-serializeDates = (entity) ->
+serializeDates = (entity, factory = (value) -> value.toISOString()) ->
   preparedEntity =
     if entity instanceof Array
       []
@@ -18,7 +18,7 @@ serializeDates = (entity) ->
 
   for key, value of entity
     if POSTFIXES.some((p) -> ///\w+#{p}$///.test(key)) && (value instanceof moment || value instanceof Date)
-      value = value.toISOString()
+      value = factory(value)
     else if typeof value is 'object' && value isnt null
       value = serializeDates(value)
     set(preparedEntity, key, value)
